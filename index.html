@@ -1,0 +1,310 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VideoMeet - Video Conferencing Platform</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <!-- Welcome Screen -->
+    <div id="welcome-screen" class="screen active">
+        <div class="welcome-container">
+            <header class="welcome-header">
+                <h1 class="logo">VideoMeet</h1>
+                <p class="tagline">Connect, collaborate, and communicate seamlessly</p>
+            </header>
+            
+            <main class="welcome-main">
+                <div class="welcome-actions">
+                    <button class="btn btn--primary btn--lg" id="new-meeting-btn">
+                        <span>📹</span> New Meeting
+                    </button>
+                    <button class="btn btn--outline btn--lg" id="join-meeting-btn">
+                        <span>🔗</span> Join Meeting
+                    </button>
+                </div>
+                
+                <div class="quick-access">
+                    <h3>Recent Meetings</h3>
+                    <div id="recent-meetings" class="meeting-list">
+                        <!-- Recent meetings will be populated by JS -->
+                    </div>
+                </div>
+            </main>
+        </div>
+    </div>
+
+    <!-- Join Meeting Screen -->
+    <div id="join-screen" class="screen">
+        <div class="join-container">
+            <header class="join-header">
+                <button class="btn btn--outline btn--sm" id="back-to-welcome">← Back</button>
+                <h2>Join Meeting</h2>
+            </header>
+            
+            <form class="join-form" id="join-form">
+                <div class="form-group">
+                    <label class="form-label" for="meeting-id">Meeting ID</label>
+                    <input type="text" class="form-control" id="meeting-id" placeholder="Enter meeting ID (e.g., 123-456-789)" required>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label" for="display-name">Your Name</label>
+                    <input type="text" class="form-control" id="display-name" placeholder="Enter your display name" required>
+                </div>
+                
+                <div class="form-group">
+                    <div class="meeting-options">
+                        <label class="checkbox-label">
+                            <input type="checkbox" id="join-audio" checked>
+                            <span>Join with audio</span>
+                        </label>
+                        <label class="checkbox-label">
+                            <input type="checkbox" id="join-video" checked>
+                            <span>Join with video</span>
+                        </label>
+                    </div>
+                </div>
+                
+                <button type="submit" class="btn btn--primary btn--lg btn--full-width">Join Meeting</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Pre-meeting Setup Screen -->
+    <div id="setup-screen" class="screen">
+        <div class="setup-container">
+            <header class="setup-header">
+                <h2>Ready to join?</h2>
+                <p>Test your camera and microphone before joining</p>
+            </header>
+            
+            <div class="setup-preview">
+                <div class="video-preview">
+                    <div class="preview-placeholder" id="preview-video">
+                        <span class="preview-icon">📷</span>
+                        <p>Camera Preview</p>
+                    </div>
+                    <div class="preview-controls">
+                        <button class="btn btn--outline" id="toggle-preview-video">
+                            <span id="video-icon">📹</span>
+                        </button>
+                        <button class="btn btn--outline" id="toggle-preview-audio">
+                            <span id="audio-icon">🎤</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="setup-actions">
+                <button class="btn btn--outline" id="setup-back">Back</button>
+                <button class="btn btn--primary btn--lg" id="join-now-btn">Join Now</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Meeting Room -->
+    <div id="meeting-room" class="screen">
+        <div class="meeting-container">
+            <!-- Meeting Header -->
+            <header class="meeting-header">
+                <div class="meeting-info">
+                    <h2 id="meeting-title">Team Standup</h2>
+                    <div class="meeting-details">
+                        <span id="meeting-duration">00:15:32</span>
+                        <span id="participant-count">6 participants</span>
+                        <span id="meeting-id-display">ID: 123-456-789</span>
+                    </div>
+                </div>
+                
+                <div class="meeting-actions">
+                    <button class="btn btn--outline btn--sm" id="layout-toggle">Gallery View</button>
+                    <button class="btn btn--outline btn--sm" id="settings-btn">⚙️</button>
+                </div>
+            </header>
+
+            <!-- Main Content Area -->
+            <div class="meeting-content">
+                <!-- Video Grid -->
+                <div class="video-area" id="video-area">
+                    <div class="video-grid" id="video-grid">
+                        <!-- Participant videos will be populated by JS -->
+                    </div>
+                    
+                    <!-- Screen Share Area -->
+                    <div class="screen-share-area hidden" id="screen-share-area">
+                        <div class="shared-screen">
+                            <div class="screen-placeholder">
+                                <span>🖥️</span>
+                                <p>Screen being shared by Tom Brown</p>
+                            </div>
+                        </div>
+                        <div class="participant-strip">
+                            <!-- Mini participant videos during screen share -->
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Chat Sidebar -->
+                <div class="sidebar chat-sidebar hidden" id="chat-sidebar">
+                    <div class="sidebar-header">
+                        <h3>Chat</h3>
+                        <button class="btn btn--outline btn--sm" id="close-chat">×</button>
+                    </div>
+                    <div class="chat-messages" id="chat-messages">
+                        <!-- Chat messages will be populated by JS -->
+                    </div>
+                    <div class="chat-input-area">
+                        <div class="chat-input-container">
+                            <input type="text" class="form-control" id="chat-input" placeholder="Type a message...">
+                            <button class="btn btn--primary" id="send-message">Send</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Participants Sidebar -->
+                <div class="sidebar participants-sidebar hidden" id="participants-sidebar">
+                    <div class="sidebar-header">
+                        <h3>Participants (<span id="sidebar-participant-count">6</span>)</h3>
+                        <button class="btn btn--outline btn--sm" id="close-participants">×</button>
+                    </div>
+                    <div class="participants-list" id="participants-list">
+                        <!-- Participants will be populated by JS -->
+                    </div>
+                </div>
+            </div>
+
+            <!-- Meeting Controls -->
+            <div class="meeting-controls">
+                <div class="controls-left">
+                    <button class="control-btn" id="mute-btn" data-tooltip="Mute/Unmute">
+                        <span class="control-icon" id="mute-icon">🎤</span>
+                        <span class="control-label">Mute</span>
+                    </button>
+                    
+                    <button class="control-btn" id="video-btn" data-tooltip="Start/Stop Video">
+                        <span class="control-icon" id="video-control-icon">📹</span>
+                        <span class="control-label">Video</span>
+                    </button>
+                </div>
+
+                <div class="controls-center">
+                    <button class="control-btn" id="screen-share-btn" data-tooltip="Share Screen">
+                        <span class="control-icon">🖥️</span>
+                        <span class="control-label">Share</span>
+                    </button>
+                    
+                    <button class="control-btn" id="chat-btn" data-tooltip="Open Chat">
+                        <span class="control-icon">💬</span>
+                        <span class="control-label">Chat</span>
+                        <span class="notification-badge hidden" id="chat-badge">3</span>
+                    </button>
+                    
+                    <button class="control-btn" id="participants-btn" data-tooltip="View Participants">
+                        <span class="control-icon">👥</span>
+                        <span class="control-label">Participants</span>
+                    </button>
+                    
+                    <button class="control-btn" id="record-btn" data-tooltip="Record Meeting">
+                        <span class="control-icon">🔴</span>
+                        <span class="control-label">Record</span>
+                    </button>
+                </div>
+
+                <div class="controls-right">
+                    <button class="control-btn control-btn--danger" id="leave-btn" data-tooltip="Leave Meeting">
+                        <span class="control-icon">📞</span>
+                        <span class="control-label">Leave</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Leave Meeting Confirmation Modal -->
+    <div class="modal hidden" id="leave-modal">
+        <div class="modal-content">
+            <h3>Leave Meeting?</h3>
+            <p>Are you sure you want to leave this meeting?</p>
+            <div class="modal-actions">
+                <button class="btn btn--outline" id="cancel-leave">Cancel</button>
+                <button class="btn btn--primary" id="confirm-leave">Leave Meeting</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Settings Modal -->
+    <div class="modal hidden" id="settings-modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Settings</h3>
+                <button class="btn btn--outline btn--sm" id="close-settings">×</button>
+            </div>
+            <div class="settings-tabs">
+                <button class="tab-btn active" data-tab="video">Video</button>
+                <button class="tab-btn" data-tab="audio">Audio</button>
+                <button class="tab-btn" data-tab="general">General</button>
+            </div>
+            <div class="settings-content">
+                <div class="tab-content active" id="video-settings">
+                    <div class="form-group">
+                        <label class="form-label">Camera</label>
+                        <select class="form-control">
+                            <option>Default Camera</option>
+                            <option>External Webcam</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Video Quality</label>
+                        <select class="form-control">
+                            <option>HD (720p)</option>
+                            <option>SD (480p)</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="tab-content" id="audio-settings">
+                    <div class="form-group">
+                        <label class="form-label">Microphone</label>
+                        <select class="form-control">
+                            <option>Default Microphone</option>
+                            <option>External Microphone</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Speaker</label>
+                        <select class="form-control">
+                            <option>Default Speaker</option>
+                            <option>External Speaker</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="tab-content" id="general-settings">
+                    <div class="form-group">
+                        <label class="checkbox-label">
+                            <input type="checkbox" checked>
+                            <span>Join with audio muted</span>
+                        </label>
+                    </div>
+                    <div class="form-group">
+                        <label class="checkbox-label">
+                            <input type="checkbox">
+                            <span>Join with video off</span>
+                        </label>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Notification Toast -->
+    <div class="toast hidden" id="notification-toast">
+        <div class="toast-content">
+            <span class="toast-message" id="toast-message"></span>
+            <button class="toast-close" id="toast-close">×</button>
+        </div>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>
